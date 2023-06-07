@@ -2,7 +2,7 @@ import random
 import copy
 
 tablero_4x4 = [[2,2,0,0],[0,0,0,0],[0,0,0,0],[0,0,0,0]]
-tablero_5x5 = [[0,0,0,2,2],[0,0,0,0,0],[0,0,0,0,0],[0,0,0,0,0], [0,0,0,0,0]]
+tablero_5x5 = [[2,0,0,0,0],[2,0,0,0,0],[0,0,0,0,0],[0,0,0,0,0],[0,0,0,0,0]]
 
 def seleccionar_barcos(tablero):
     '''Esta funcion se llama primero y lo que hace es que me retorna dos tableros nuevos''' 
@@ -20,7 +20,7 @@ def mover_barcos(tablero_original):
     while i < n:
         while j < m:
             barco = tablero_original[i][j]
-            movimiento_aleatorio = random.randint(1,1) # Esta funcion dice cuantas posiciones se movera de forma aleatoria, son entre 1 y 3
+            movimiento_aleatorio = random.randint(0,0) # Esta funcion dice cuantas posiciones se movera de forma aleatoria, son entre 1 y 3
             direccion_aleatorio = random.randint(2,2) # Esta funcion dice si se movera a la derecha o izquierda, arriba o hacia abajo.  
                                                           # 0 = arriba, 1 = derecha, 2 = abajo, 3 = izquierda
             # Para los barcos de 1 espacio                                     
@@ -121,7 +121,7 @@ def mover_barcos(tablero_original):
                                     tablero_original[i][j+1] = 0
                                 else:
                                     continue
-                            else: # Si el movimiento es de 2 o tres
+                            else: # Si el movimiento es de 2 o 3
                                 if tablero_nuevo[i][j - movimiento_aleatorio] == 0 and tablero_nuevo[i][j + 1 - movimiento_aleatorio] == 0: # Ver si ambos espacios estan ocupados
                                     tablero_nuevo[i][j - movimiento_aleatorio] = barco
                                     tablero_nuevo[i][j + 1 - movimiento_aleatorio] = barco
@@ -133,68 +133,69 @@ def mover_barcos(tablero_original):
                         else:
                             continue
 
-                else: # Para barcos verticales
+                else: # Para barcos de 2 verticales
                     if direccion_aleatorio == 0: # Se movera arriba
                         if i - movimiento_aleatorio >= 0:
-                            if tablero_nuevo[i - movimiento_aleatorio][j] == 0 and tablero_nuevo[i + 1 - movimiento_aleatorio][j] == 0:
-                                if movimiento_aleatorio == 1:
+                            if movimiento_aleatorio == 1:
+                                if tablero_nuevo[i - movimiento_aleatorio][j] == 0:
                                     tablero_nuevo[i - movimiento_aleatorio][j] = barco
                                     tablero_nuevo[i + 1][j] = 0
                                     tablero_original[i + 1][j] = 0
                                 else:
+                                    continue
+                            else:
+                                if tablero_nuevo[i - movimiento_aleatorio][j] == 0 and tablero_nuevo[i + 1 - movimiento_aleatorio][j] == 0:
                                     tablero_nuevo[i - movimiento_aleatorio][j] = barco
                                     tablero_nuevo[i + 1 - movimiento_aleatorio][j] = barco
-                                    tablero_nuevo[i][j]
+                                    tablero_nuevo[i][j] = 0
+                                    tablero_nuevo[i + 1][j] = 0
                                     tablero_original[i + 1][j] = 0
-                            else:
-                                continue
+                                else:
+                                    continue
                         else:
                             continue
                         
                     elif direccion_aleatorio == 1: # Se movera a la derecha
-                        if j + 1 + movimiento_aleatorio < n:
-                            if tablero_nuevo[i][j + movimiento_aleatorio] == 0 and tablero_nuevo[i][j + 1 + movimiento_aleatorio] == 0:
-                                if movimiento_aleatorio == 1:
-                                    tablero_nuevo[i][j + 1 + movimiento_aleatorio] = barco
-                                    tablero_nuevo[i][j + movimiento_aleatorio] = barco
-                                    tablero_nuevo[i][j] = 0
-                                    tablero_original[i][j+1] = 0
-                                else:
-                                    tablero_nuevo[i][j + 1 + movimiento_aleatorio] = barco
-                                    tablero_nuevo[i][j + movimiento_aleatorio] = barco
-                                    tablero_nuevo[i][j] = 0
-                                    tablero_nuevo[i][j+1] = 0
-                                    tablero_original[i][j+1] = 0
+                        if j + movimiento_aleatorio < n:
+                            if tablero_nuevo[i][j + movimiento_aleatorio] == 0 and tablero_nuevo[i + 1][j + movimiento_aleatorio] == 0:
+                                tablero_nuevo[i][j + movimiento_aleatorio] = barco
+                                tablero_nuevo[i + 1][j + movimiento_aleatorio] = barco
+                                tablero_nuevo[i][j] = 0
+                                tablero_nuevo[i + 1][j] =0
+                                tablero_original[i + 1][j] =0
                             else:
                                 continue
                         else:
                             continue
 
                     elif direccion_aleatorio == 2: #Se mueve hacia abajo
-                        if i + movimiento_aleatorio < m:
-                            if tablero_nuevo[i + movimiento_aleatorio][j] == 0 and tablero_nuevo[i + movimiento_aleatorio][j + 1] == 0:
-                                tablero_nuevo[i + movimiento_aleatorio][j] = barco
-                                tablero_nuevo[i + movimiento_aleatorio][j + 1] = barco
-                                tablero_nuevo[i][j] = 0
-                                tablero_nuevo[i][j + 1] = 0
-                                tablero_original[i][j+1] = 0
+                        if i + 1 + movimiento_aleatorio < m:
+                            if movimiento_aleatorio == 1:
+                                if tablero_nuevo[i + 1 + movimiento_aleatorio][j] == 0:
+                                    tablero_nuevo[i + 1 + movimiento_aleatorio][j] = barco
+                                    tablero_nuevo[i][j] = 0
+                                    tablero_original[i + 1][j] = 0
+                                else:
+                                    continue
                             else:
-                                continue
+                                if tablero_nuevo[i + movimiento_aleatorio][j] == 0 and tablero_nuevo[i + 1 + movimiento_aleatorio][j] == 0:
+                                    tablero_nuevo[i + movimiento_aleatorio][j] = barco
+                                    tablero_nuevo[i + 1 + movimiento_aleatorio][j] = barco
+                                    tablero_nuevo[i][j] = 0
+                                    tablero_nuevo[i + 1][j] = 0
+                                    tablero_original[i + 1][j] = 0
+                                else:
+                                    continue
                         else:
                             continue
                     elif direccion_aleatorio == 3: #Se mueve hacia la izquierda
                         if j - movimiento_aleatorio >= 0:
-                            if tablero_nuevo[i][j - movimiento_aleatorio] and tablero_nuevo[i][j + 1 - movimiento_aleatorio] == 0:
-                                if movimiento_aleatorio == 1:
-                                    tablero_nuevo[i][j - movimiento_aleatorio] = barco
-                                    tablero_nuevo[i][j + 1 - movimiento_aleatorio] = barco
-                                    tablero_nuevo[i][j] = 0
-                                else:
-                                    tablero_nuevo[i][j + 1 - movimiento_aleatorio] = barco
-                                    tablero_nuevo[i][j - movimiento_aleatorio] = barco
-                                    tablero_nuevo[i][j] = 0
-                                    tablero_nuevo[i][j + 1] = 0
-                                    tablero_original[i][j+1] = 0
+                            if tablero_nuevo[i][j - movimiento_aleatorio] == 0 and tablero_nuevo[i + 1][j - movimiento_aleatorio] == 0:
+                                tablero_nuevo[i][j - movimiento_aleatorio] = barco
+                                tablero_nuevo[i + 1][j - movimiento_aleatorio] = barco
+                                tablero_nuevo[i][j] = 0
+                                tablero_nuevo[i + 1][j] =0
+                                tablero_original[i + 1][j] =0
                             else:
                                 continue
                         else:
