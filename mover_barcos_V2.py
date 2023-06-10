@@ -1,7 +1,7 @@
 import random
 
 tablero_4x4 = [[2,2,0,0],[0,0,0,0],[0,0,0,0],[0,0,0,0]]
-tablero_5x5 = [[0,0,0,0,0],[0,0,0,0,0],[0,0,0,0,0],[0,0,0,0,0],[0,0,0,0,0]]
+tablero_5x5 = [[3,0,1,0,0],[2,0,0,0,0],[4,0,0,0,1],[4,0,0,0,0],[0,0,0,5,5]]
 
 def copiar_tablero(tablero):
     '''Esta funcion se llama primero y lo que hace es que me copia el tablero para asi modificar el nuevo''' 
@@ -25,30 +25,33 @@ def mover_barcos(tablero_original, tablero_nuevo, i=0, j=0):
     while i < n:
         while j < m:
             barco = tablero_original[i][j]
-            movimiento_aleatorio = random.randint(3,3) # Esta funcion dice cuantas posiciones se movera de forma aleatoria, son entre 1 y 3
-            direccion_aleatorio = random.randint(3,3) # Esta funcion dice si se movera a la derecha o izquierda, arriba o hacia abajo.  
+            movimiento_aleatorio = random.randint(1,3) # Esta funcion dice cuantas posiciones se movera de forma aleatoria, son entre 1 y 3
+            direccion_aleatorio = random.randint(0,3) # Esta funcion dice si se movera a la derecha o izquierda, arriba o hacia abajo.  
                                                           # 0 = arriba, 1 = derecha, 2 = abajo, 3 = izquierda
             # Para los barcos de 1 espacio                                     
             if tablero_original[i][j] == 1 or tablero_original[i][j] == 4:
                 return mover_barcos_un_espacio(tablero_original, tablero_nuevo, i, j, movimiento_aleatorio, direccion_aleatorio)
             # Para los barcos de 2
             elif tablero_original[i][j] == 2 or tablero_original[i][j] == 5 or tablero_original[i][j] == 3 or tablero_original[i][j] == 6:
-
-                # Para los barcos horizontales
-                if tablero_original[i][j] == tablero_original[i][j + 1]: # Si ambos barcos estan intactos
-                    return mover_barcos_dos_espacios_horizontales(tablero_original, tablero_nuevo, i, j, movimiento_aleatorio, direccion_aleatorio)
-                elif tablero_original[i][j + 1] == barco + 1: # Si la otra parte esta dañada
-                    return mover_barcos_dos_espacios_horizontales(tablero_original, tablero_nuevo, i, j, movimiento_aleatorio, direccion_aleatorio)
-                elif tablero_original[i][j + 1] == barco - 1: # Si la parte actual esta dañada pero la siguiente no
-                    return mover_barcos_dos_espacios_horizontales(tablero_original, tablero_nuevo, i, j, movimiento_aleatorio, direccion_aleatorio)
                 
                 # Para los barcos verticales
-                if tablero_original[i][j] == tablero_original[i + 1][j]: # Si ambos barcos estan intactos
-                    return mover_barcos_dos_espacios_verticales(tablero_original, tablero_nuevo, i, j, movimiento_aleatorio, direccion_aleatorio)
-                elif tablero_original[i + 1][j] == barco + 1: # Si la otra parte esta dañada
-                    return mover_barcos_dos_espacios_verticales(tablero_original, tablero_nuevo, i, j, movimiento_aleatorio, direccion_aleatorio)
-                elif tablero_original[i + 1][j] == barco - 1: # Si la parte actual esta dañada pero la siguiente no
-                    return mover_barcos_dos_espacios_verticales(tablero_original, tablero_nuevo, i, j, movimiento_aleatorio, direccion_aleatorio)
+                if i + 1 < n:
+                    if tablero_original[i][j] == tablero_original[i + 1][j]: # Si ambos barcos estan intactos
+                        return mover_barcos_dos_espacios_verticales(tablero_original, tablero_nuevo, i, j, movimiento_aleatorio, direccion_aleatorio)
+                    elif tablero_original[i + 1][j] == barco + 1: # Si la otra parte esta dañada
+                        return mover_barcos_dos_espacios_verticales(tablero_original, tablero_nuevo, i, j, movimiento_aleatorio, direccion_aleatorio)
+                    elif tablero_original[i + 1][j] == barco - 1: # Si la parte actual esta dañada pero la siguiente no
+                        return mover_barcos_dos_espacios_verticales(tablero_original, tablero_nuevo, i, j, movimiento_aleatorio, direccion_aleatorio)
+                
+                # Para los barcos horizontales
+                elif j + 1 < m:
+                    if tablero_original[i][j] == tablero_original[i][j + 1]: # Si ambos barcos estan intactos
+                        return mover_barcos_dos_espacios_horizontales(tablero_original, tablero_nuevo, i, j, movimiento_aleatorio, direccion_aleatorio)
+                    elif tablero_original[i][j + 1] == barco + 1: # Si la otra parte esta dañada
+                        return mover_barcos_dos_espacios_horizontales(tablero_original, tablero_nuevo, i, j, movimiento_aleatorio, direccion_aleatorio)
+                    elif tablero_original[i][j + 1] == barco - 1: # Si la parte actual esta dañada pero la siguiente no
+                        return mover_barcos_dos_espacios_horizontales(tablero_original, tablero_nuevo, i, j, movimiento_aleatorio, direccion_aleatorio)
+                
             j += 1
         i +=1
         j = 0
@@ -191,6 +194,7 @@ def mover_barcos_dos_espacios_verticales(tablero_original, tablero_nuevo, i, j, 
             if movimiento_aleatorio == 1:
                 if tablero_nuevo[i - movimiento_aleatorio][j] == 0:
                     tablero_nuevo[i - movimiento_aleatorio][j] = barco
+                    tablero_nuevo[i + 1 - movimiento_aleatorio][j] = tablero_nuevo[i + 1][j]
                     tablero_nuevo[i + 1][j] = 0
                     tablero_original[i + 1][j] = 0
                     return mover_barcos(tablero_original, tablero_nuevo, i, j + 1)
@@ -199,7 +203,7 @@ def mover_barcos_dos_espacios_verticales(tablero_original, tablero_nuevo, i, j, 
             else:
                 if tablero_nuevo[i - movimiento_aleatorio][j] == 0 and tablero_nuevo[i + 1 - movimiento_aleatorio][j] == 0:
                     tablero_nuevo[i - movimiento_aleatorio][j] = barco
-                    tablero_nuevo[i + 1 - movimiento_aleatorio][j] = barco
+                    tablero_nuevo[i + 1 - movimiento_aleatorio][j] = tablero_nuevo[i + 1][j]
                     tablero_nuevo[i][j] = 0
                     tablero_nuevo[i + 1][j] = 0
                     tablero_original[i + 1][j] = 0
@@ -213,7 +217,7 @@ def mover_barcos_dos_espacios_verticales(tablero_original, tablero_nuevo, i, j, 
         if j + movimiento_aleatorio < n:
             if tablero_nuevo[i][j + movimiento_aleatorio] == 0 and tablero_nuevo[i + 1][j + movimiento_aleatorio] == 0:
                 tablero_nuevo[i][j + movimiento_aleatorio] = barco
-                tablero_nuevo[i + 1][j + movimiento_aleatorio] = barco
+                tablero_nuevo[i + 1][j + movimiento_aleatorio] = tablero_nuevo[i + 1][j]
                 tablero_nuevo[i][j] = 0
                 tablero_nuevo[i + 1][j] =0
                 tablero_original[i + 1][j] =0
@@ -227,7 +231,8 @@ def mover_barcos_dos_espacios_verticales(tablero_original, tablero_nuevo, i, j, 
         if i + 1 + movimiento_aleatorio < m:
             if movimiento_aleatorio == 1:
                 if tablero_nuevo[i + 1 + movimiento_aleatorio][j] == 0:
-                    tablero_nuevo[i + 1 + movimiento_aleatorio][j] = barco
+                    tablero_nuevo[i + 1 + movimiento_aleatorio][j] = tablero_nuevo[i + 1][j]
+                    tablero_nuevo[i + movimiento_aleatorio][j] = tablero_nuevo[i][j]
                     tablero_nuevo[i][j] = 0
                     tablero_original[i + 1][j] = 0
                     return mover_barcos(tablero_original, tablero_nuevo, i, j + 1)
@@ -235,8 +240,8 @@ def mover_barcos_dos_espacios_verticales(tablero_original, tablero_nuevo, i, j, 
                     return mover_barcos(tablero_original, tablero_nuevo, i, j)
             else:
                 if tablero_nuevo[i + movimiento_aleatorio][j] == 0 and tablero_nuevo[i + 1 + movimiento_aleatorio][j] == 0:
+                    tablero_nuevo[i + 1 + movimiento_aleatorio][j] = tablero_nuevo[i + 1][j]
                     tablero_nuevo[i + movimiento_aleatorio][j] = barco
-                    tablero_nuevo[i + 1 + movimiento_aleatorio][j] = barco
                     tablero_nuevo[i][j] = 0
                     tablero_nuevo[i + 1][j] = 0
                     tablero_original[i + 1][j] = 0
@@ -249,7 +254,7 @@ def mover_barcos_dos_espacios_verticales(tablero_original, tablero_nuevo, i, j, 
         if j - movimiento_aleatorio >= 0:
             if tablero_nuevo[i][j - movimiento_aleatorio] == 0 and tablero_nuevo[i + 1][j - movimiento_aleatorio] == 0:
                 tablero_nuevo[i][j - movimiento_aleatorio] = barco
-                tablero_nuevo[i + 1][j - movimiento_aleatorio] = barco
+                tablero_nuevo[i + 1][j - movimiento_aleatorio] = tablero_nuevo[i + 1][j]
                 tablero_nuevo[i][j] = 0
                 tablero_nuevo[i + 1][j] =0
                 tablero_original[i + 1][j] =0
